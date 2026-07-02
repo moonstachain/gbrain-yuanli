@@ -12,6 +12,19 @@ export const ollama: Recipe = {
     setup_url: 'https://ollama.ai',
   },
   touchpoints: {
+    // Local pin patch (yuanli): declare a chat touchpoint so probeChatModel
+    // accepts ollama models for think/synthesis. Ollama serves an
+    // OpenAI-compatible /v1/chat/completions endpoint locally at zero cost.
+    chat: {
+      models: ['deepseek-r1:8b', 'llama3.1', 'qwen2.5'],
+      supports_tools: false,
+      supports_subagent_loop: false,
+      supports_prompt_cache: false,
+      max_context_tokens: 32768,
+      cost_per_1m_input_usd: 0,
+      cost_per_1m_output_usd: 0,
+      price_last_verified: '2026-07-02',
+    },
     embedding: {
       models: ['nomic-embed-text', 'mxbai-embed-large', 'all-minilm', 'bge-m3'],
       default_dims: 768, // nomic-embed-text native dim

@@ -13,8 +13,11 @@ export const ollama: Recipe = {
   },
   touchpoints: {
     embedding: {
-      models: ['nomic-embed-text', 'mxbai-embed-large', 'all-minilm'],
+      models: ['nomic-embed-text', 'mxbai-embed-large', 'all-minilm', 'bge-m3'],
       default_dims: 768, // nomic-embed-text native dim
+      // Local pin patch (yuanli): bge-m3 emits 1024-dim vectors natively;
+      // declared so init's Tier-1 dim check accepts --embedding-dimensions 1024.
+      dims_options: [768, 1024],
       cost_per_1m_tokens_usd: 0,
       price_last_verified: '2026-04-20',
       // Ollama's batch capacity depends on the locally loaded model + the

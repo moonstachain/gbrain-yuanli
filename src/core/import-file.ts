@@ -951,7 +951,21 @@ export async function importFromFile(
     const { applyInference } = await import('./frontmatter-inference.ts');
     const { content: inferred, inferred: meta } = applyInference(relativePath, content);
     if (!meta.skipped) {
-      content = inferred;
+      // Local pin patch (yuanli): when a schema pack is active, drop the
+      // synthesized `type:` from inferred frontmatter so the pack's
+      // path_prefixes own type inference (parseMarkdown prefers frontmatter
+      // type, which otherwise pins every bare file to the catch-all 'note').
+      if (opts.activePack && opts.activePack.page_types.length > 0) {
+        const m = inferred.match(/^---\n([\s\S]*?)\n---\n/);
+        if (m) {
+          const cleaned = m[1].split('\n').filter((l) => !l.startsWith('type:')).join('\n');
+          content = `---\n${cleaned}\n---\n` + inferred.slice(m[0].length);
+        } else {
+          content = inferred;
+        }
+      } else {
+        content = inferred;
+      }
     }
   }
 

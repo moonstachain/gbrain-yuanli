@@ -108,23 +108,32 @@ async function create(name: string, opts: { takesHolders?: string[] } = {}) {
 }
 
 async function permissions(name: string, action: string, value: string | undefined) {
-  if (!name || action !== 'set-takes-holders' || !value) {
+  // yuanli pin p4: + set-sources — grants legacy bearer token a source scope
+  // (permissions.source_id array, consumed by core/legacy-token-scope.ts).
+  // Without it HTTP MCP search/query fail-close to the empty 'default' source.
+  const ACTIONS: Record<string, { key: string; label: string; emptyMsg: string }> = {
+    'set-takes-holders': { key: 'takes_holders', label: 'takes_holders', emptyMsg: 'takes-holders list cannot be empty (use "world" for default-deny on private)' },
+    'set-sources':       { key: 'source_id',     label: 'source_id (read scope)', emptyMsg: 'sources list cannot be empty (e.g. soul,founder)' },
+  };
+  const spec = ACTIONS[action];
+  if (!name || !spec || !value) {
     console.error('Usage: auth permissions <name> set-takes-holders world,garry,brain');
+    console.error('       auth permissions <name> set-sources soul,founder');
     process.exit(1);
   }
   try {
     await withConfiguredSql(async (sql, engine) => {
       const list = value.split(',').map(s => s.trim()).filter(Boolean);
       if (list.length === 0) {
-        console.error('takes-holders list cannot be empty (use "world" for default-deny on private)');
+        console.error(spec.emptyMsg);
         process.exit(1);
       }
-      const perms = { takes_holders: list };
-      // JSONB UPDATE via executeRawJsonb — same pattern as create() above.
+      const perms = { [spec.key]: list };
+      // JSONB MERGE（非整体覆盖）：保留既有键（takes_holders / source_id 互不冲掉）。
       const result = await executeRawJsonb(
         engine,
         `UPDATE access_tokens
-            SET permissions = $2::jsonb
+            SET permissions = COALESCE(permissions, '{}'::jsonb) || $2::jsonb
             WHERE name = $1
             RETURNING id`,
         [name],
@@ -134,7 +143,7 @@ async function permissions(name: string, action: string, value: string | undefin
         console.error(`Token "${name}" not found.`);
         process.exit(1);
       }
-      console.log(`Updated "${name}": takes_holders = ${JSON.stringify(list)}`);
+      console.log(`Updated "${name}": ${spec.label} = ${JSON.stringify(list)}`);
     });
   } catch (e: any) {
     console.error('Error:', e.message);

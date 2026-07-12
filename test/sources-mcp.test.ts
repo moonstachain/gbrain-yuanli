@@ -80,13 +80,14 @@ function findOp(name: string): Operation {
   return op;
 }
 
-function ctxRemote(scopes: string[]): OperationContext {
+function ctxRemote(scopes: string[], allowedSources?: string[]): OperationContext {
   const auth: AuthInfo = {
     token: 'gbrain_at_xxx',
     clientId: 'gbrain_cl_test',
     clientName: 'test-client',
     scopes,
     expiresAt: Math.floor(Date.now() / 1000) + 3600,
+    allowedSources,
   };
   return {
     engine: engine as any,
@@ -154,11 +155,12 @@ describe('sources_* handlers — happy path', () => {
         url: 'https://github.com/example/repo',
       });
       const listOp = findOp('sources_list');
-      const result = (await listOp.handler(ctxRemote(['read']), {})) as any;
+      const result = (await listOp.handler(ctxRemote(['read'], ['mcp-list-test']), {})) as any;
       expect(Array.isArray(result.sources)).toBe(true);
       const found = result.sources.find((s: any) => s.id === 'mcp-list-test');
       expect(found).toBeDefined();
       expect(found.remote_url).toBe('https://github.com/example/repo');
+      expect(found.local_path).toBeNull();
     });
   });
 
@@ -339,7 +341,7 @@ describe('sources_list — include_archived honored (was silently leaking)', () 
       );
 
       const listOp = findOp('sources_list');
-      const result = (await listOp.handler(ctxRemote(['read']), {})) as any;
+      const result = (await listOp.handler(ctxRemote(['read'], ['archived-src']), {})) as any;
       const found = result.sources.find((s: any) => s.id === 'archived-src');
       expect(found).toBeUndefined();
     });
@@ -358,12 +360,40 @@ describe('sources_list — include_archived honored (was silently leaking)', () 
       );
 
       const listOp = findOp('sources_list');
-      const result = (await listOp.handler(ctxRemote(['read']), {
+      const result = (await listOp.handler(ctxRemote(['read'], ['archived-included']), {
         include_archived: true,
       })) as any;
       const found = result.sources.find((s: any) => s.id === 'archived-included');
       expect(found).toBeDefined();
     });
+  });
+});
+
+describe('sources metadata honors the OAuth source grant', () => {
+  test('read-only default client cannot enumerate or inspect another source', async () => {
+    await engine.executeRaw(
+      `INSERT INTO sources (id, name, local_path, config) VALUES ($1, $2, $3, '{}'::jsonb)`,
+      ['private-source', 'private-source', '/tmp/private-source'],
+    );
+    const listOp = findOp('sources_list');
+    const listed = (await listOp.handler(ctxRemote(['read'], ['default']), {})) as any;
+    expect(listed.sources.map((row: any) => row.id)).toEqual(['default']);
+    expect(listed.sources[0].local_path).toBeNull();
+    const statusOp = findOp('sources_status');
+    await expect(statusOp.handler(ctxRemote(['read'], ['default']), { id: 'private-source' }))
+      .rejects.toThrow(/outside your granted sources/);
+  });
+
+  test('sources_admin may enumerate managed sources but still never sees host paths remotely', async () => {
+    await engine.executeRaw(
+      `INSERT INTO sources (id, name, local_path, config) VALUES ($1, $2, $3, '{}'::jsonb)`,
+      ['managed-source', 'managed-source', '/tmp/managed-source'],
+    );
+    const listOp = findOp('sources_list');
+    const listed = (await listOp.handler(ctxRemote(['read', 'sources_admin']), {})) as any;
+    const row = listed.sources.find((item: any) => item.id === 'managed-source');
+    expect(row).toBeDefined();
+    expect(row.local_path).toBeNull();
   });
 });
 

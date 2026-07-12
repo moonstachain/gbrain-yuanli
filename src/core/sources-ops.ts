@@ -116,6 +116,14 @@ export interface SourceListEntry {
   last_sync_at: string | null;
 }
 
+export interface SourceListOpts {
+  includeArchived?: boolean;
+  sourceId?: string;
+  sourceIds?: string[];
+  /** Remote callers never need host filesystem locations. */
+  redactLocations?: boolean;
+}
+
 export interface SourceStatus {
   id: string;
   name: string;
@@ -546,16 +554,25 @@ export async function resolveScopedSourceOrThrow(
 
 export async function listSources(
   engine: BrainEngine,
-  opts: { includeArchived?: boolean } = {},
+  opts: SourceListOpts = {},
 ): Promise<SourceListEntry[]> {
   // v0.28.1 codex finding (MEDIUM): the prior version ignored the
   // includeArchived flag and returned every row. That leaked archived
   // sources' ids, local_paths, and remote_urls to read-scoped MCP callers
   // who shouldn't see soft-deleted state. Filter at the SQL level so the
   // archived rows never reach the wire by default.
-  const archivedFilter = opts.includeArchived
-    ? ''
-    : 'WHERE archived IS NOT TRUE';
+  if (opts.sourceIds !== undefined && opts.sourceIds.length === 0) return [];
+  const predicates: string[] = [];
+  const params: unknown[] = [];
+  if (!opts.includeArchived) predicates.push('archived IS NOT TRUE');
+  if (opts.sourceIds !== undefined) {
+    params.push(opts.sourceIds);
+    predicates.push(`id = ANY($${params.length}::text[])`);
+  } else if (opts.sourceId !== undefined) {
+    params.push(opts.sourceId);
+    predicates.push(`id = $${params.length}`);
+  }
+  const where = predicates.length > 0 ? `WHERE ${predicates.join(' AND ')}` : '';
   const rows = await engine.executeRaw<{
     id: string;
     name: string;
@@ -564,7 +581,8 @@ export async function listSources(
     config: unknown;
   }>(
     `SELECT id, name, local_path, last_sync_at, config
-       FROM sources ${archivedFilter} ORDER BY (id = 'default') DESC, id`,
+       FROM sources ${where} ORDER BY (id = 'default') DESC, id`,
+    params,
   );
   const out: SourceListEntry[] = [];
   for (const r of rows) {
@@ -572,7 +590,7 @@ export async function listSources(
     out.push({
       id: r.id,
       name: r.name,
-      local_path: r.local_path,
+      local_path: opts.redactLocations ? null : r.local_path,
       remote_url: typeof cfg.remote_url === 'string' ? cfg.remote_url : null,
       federated: cfg.federated === true,
       page_count: await countPages(engine, r.id),
@@ -691,6 +709,7 @@ export async function removeSource(
 export async function getSourceStatus(
   engine: BrainEngine,
   id: string,
+  opts: { redactLocations?: boolean } = {},
 ): Promise<SourceStatus> {
   validateSourceId(id);
   const src = await fetchSourceRow(engine, id);
@@ -717,7 +736,7 @@ export async function getSourceStatus(
   return {
     id: src.id,
     name: src.name,
-    local_path: src.local_path,
+    local_path: opts.redactLocations ? null : src.local_path,
     remote_url: remoteUrl,
     federated: isFederated(src.config),
     page_count: await countPages(engine, id),

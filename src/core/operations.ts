@@ -3801,9 +3801,13 @@ const sources_list: Operation = {
   scope: 'read',
   handler: async (ctx, p) => {
     const { listSources } = await import('./sources-ops.ts');
+    const sourceAdmin = !!ctx.auth?.scopes.some(scope => scope === 'admin' || scope === 'sources_admin');
+    const scope = sourceAdmin ? {} : sourceScopeOpts(ctx);
     return {
       sources: await listSources(ctx.engine, {
         includeArchived: (p.include_archived as boolean) === true,
+        ...scope,
+        redactLocations: ctx.remote !== false,
       }),
     };
   },
@@ -3857,7 +3861,10 @@ const sources_status: Operation = {
   scope: 'read',
   handler: async (ctx, p) => {
     const { getSourceStatus } = await import('./sources-ops.ts');
-    return getSourceStatus(ctx.engine, p.id as string);
+    const id = p.id as string;
+    const sourceAdmin = !!ctx.auth?.scopes.some(scope => scope === 'admin' || scope === 'sources_admin');
+    if (!sourceAdmin) resolveRequestedScope(ctx, id);
+    return getSourceStatus(ctx.engine, id, { redactLocations: ctx.remote !== false });
   },
   cliHints: { name: 'sources_status', hidden: true },
 };

@@ -294,6 +294,20 @@ describe('listSources', () => {
       expect(withPath?.remote_url).toBeNull();
     });
   });
+
+  test('source filters are fail-closed and remote location redaction is explicit', async () => {
+    await withEnv2(async () => {
+      await addSource(engine, { id: 'alpha', localPath: '/tmp/alpha-private' });
+      await addSource(engine, { id: 'beta', localPath: '/tmp/beta-private' });
+      const scalar = await listSources(engine, { sourceId: 'alpha', redactLocations: true });
+      expect(scalar.map(row => row.id)).toEqual(['alpha']);
+      expect(scalar[0]?.local_path).toBeNull();
+      const federated = await listSources(engine, { sourceIds: ['alpha', 'beta'], redactLocations: true });
+      expect(federated.map(row => row.id)).toEqual(['alpha', 'beta']);
+      expect(federated.every(row => row.local_path === null)).toBe(true);
+      expect(await listSources(engine, { sourceIds: [], redactLocations: true })).toEqual([]);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

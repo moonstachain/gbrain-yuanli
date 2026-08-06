@@ -1,0 +1,97 @@
+contract_version: "1.0"
+contract_id: "YL-REPO-CONTRACT-GBRAIN-20260806-0001"
+effective_date: "2026-08-06"
+
+repository:
+  repository_id: "github:moonstachain/gbrain-yuanli"
+  repository_name: "gbrain-yuanli"
+  repository_role: "rebuildable_cognitive_runtime"
+  owner: "RAY"
+  maintainers:
+    - "moonstachain"
+
+authority:
+  institutional_authority: "github:moonstachain/yuanli-strategy-soul"
+  system_of_record_for:
+    - "gbrain_runtime_code"
+    - "retrieval_and_graph_runtime_configuration"
+    - "runtime_evaluation_results"
+  consumes_from:
+    - "local://obsidian/llm-wiki"
+    - "github:moonstachain/llm-wiki"
+    - "github:moonstachain/yuanli-strategy-soul"
+  projects_to:
+    - "github:moonstachain/yuanli-os-max"
+    - "approved_agent_mcp_clients"
+  must_not_become:
+    - "second_knowledge_canon"
+    - "second_founder_genome"
+    - "method_canon"
+    - "real_world_action_authority"
+
+objects:
+  authoritative_object_types:
+    - "runtime_code"
+    - "runtime_configuration"
+    - "retrieval_evaluation"
+    - "graph_projection"
+    - "runtime_index"
+  derived_object_types:
+    - "synthesized_answer"
+    - "gap_analysis"
+    - "citation_projection"
+    - "entity_edge_projection"
+  prohibited_duplicate_object_types:
+    - "raw_evidence"
+    - "knowledge_canon"
+    - "founder_genome"
+    - "decision_record"
+    - "action_receipt"
+
+write_policy:
+  ai_may_propose:
+    - "runtime_patch"
+    - "evaluation_candidate"
+    - "gap_candidate"
+  ai_may_write:
+    - "rebuildable_index"
+    - "runtime_cache"
+    - "evaluation_receipt"
+    - "derived_graph_edge"
+  human_approval_required:
+    - "source_scope_change"
+    - "protected_type_change"
+    - "cross_tenant_access_change"
+    - "production_runtime_release"
+  founder_only: []
+
+lineage:
+  id_policy_ref: "github:moonstachain/yuanli-strategy-soul/governance/id-and-trace-policy.yaml"
+  trace_policy_ref: "github:moonstachain/yuanli-strategy-soul/governance/id-and-trace-policy.yaml"
+  authority_ledger_ref: "github:moonstachain/yuanli-strategy-soul/governance/authority-ledgers.yaml"
+  upstream_contracts:
+    - "github:moonstachain/yuanli-strategy-soul/repo-contract.yaml"
+    - "github:moonstachain/llm-wiki/repo-contract.yaml"
+  downstream_contracts:
+    - "github:moonstachain/yuanli-os-max/repo-contract.yaml"
+
+privacy:
+  default_sensitivity: "private"
+  public_projection_allowed: false
+  forbidden_content:
+    - "credentials_or_tokens"
+    - "cross_tenant_private_data"
+    - "unapproved_source_material"
+
+failure_policy:
+  unresolved_authority_conflict: "fail_closed"
+  missing_source_lineage: "exclude_from_synthesis"
+  missing_human_gate: "block_protected_change"
+  stale_projection: "rebuild"
+  source_scope_violation: "reject"
+
+status:
+  contract_status: "approved"
+  approved_by: "RAY"
+  approved_at: "2026-08-06T09:56:00+08:00"
+  merge_status: "pending_pull_request"

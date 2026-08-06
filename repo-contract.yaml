@@ -91,7 +91,9 @@ failure_policy:
   source_scope_violation: "reject"
 
 status:
-  contract_status: "approved"
+  contract_status: "active"
   approved_by: "RAY"
   approved_at: "2026-08-06T09:56:00+08:00"
-  merge_status: "pending_pull_request"
+  merged_pr: 3
+  merged_commit: "92cbc8bdc87b68d5d6359b4139efda7a9a764fbe"
+  activated_at: "2026-08-06T10:14:00+08:00"

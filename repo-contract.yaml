@@ -1,14 +1,23 @@
-contract_version: "1.0"
+contract_version: "1.1-candidate"
 contract_id: "YL-REPO-CONTRACT-GBRAIN-20260806-0001"
 effective_date: "2026-08-06"
 
 repository:
   repository_id: "github:moonstachain/gbrain-yuanli"
   repository_name: "gbrain-yuanli"
-  repository_role: "rebuildable_cognitive_runtime"
+  repository_role: "rebuildable_c2_retrieval_synthesis_graph_runtime"
   owner: "RAY"
   maintainers:
     - "moonstachain"
+
+architecture_alignment:
+  program: "ARCH-1"
+  authority_map_ref: "github:moonstachain/yuanli-strategy-soul/docs/architecture/SOURCE-VENTURE-EVOLUTION-AUTHORITY-MAP-v1.md"
+  c2_plane: "epistemic_cognitive_plane"
+  component_role: "replaceable_retrieval_synthesis_graph_engine"
+  c2_is_not_equivalent_to_this_repository: true
+  technical_component_replaceable: true
+  changes_c2_canon: false
 
 authority:
   institutional_authority: "github:moonstachain/yuanli-strategy-soul"
@@ -24,9 +33,12 @@ authority:
     - "github:moonstachain/yuanli-os-max"
     - "approved_agent_mcp_clients"
   must_not_become:
+    - "complete_C2"
     - "second_knowledge_canon"
     - "second_founder_genome"
     - "method_canon"
+    - "C3_decision_authority"
+    - "C4_action_or_outcome_authority"
     - "real_world_action_authority"
 
 objects:
@@ -47,6 +59,7 @@ objects:
     - "founder_genome"
     - "decision_record"
     - "action_receipt"
+    - "outcome_record"
 
 write_policy:
   ai_may_propose:
@@ -89,11 +102,13 @@ failure_policy:
   missing_human_gate: "block_protected_change"
   stale_projection: "rebuild"
   source_scope_violation: "reject"
+  attempt_to_assume_C2_or_C3_C4_authority: "reject"
 
 status:
-  contract_status: "active"
+  contract_status: "active_with_arch1_candidate_amendment"
   approved_by: "RAY"
   approved_at: "2026-08-06T09:56:00+08:00"
   merged_pr: 3
   merged_commit: "92cbc8bdc87b68d5d6359b4139efda7a9a764fbe"
   activated_at: "2026-08-06T10:14:00+08:00"
+  arch1_candidate_requires_human_acceptance: true

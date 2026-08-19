@@ -1,4 +1,4 @@
-contract_version: "1.1-candidate"
+contract_version: "1.1"
 contract_id: "YL-REPO-CONTRACT-GBRAIN-20260806-0001"
 effective_date: "2026-08-06"
 
@@ -105,10 +105,10 @@ failure_policy:
   attempt_to_assume_C2_or_C3_C4_authority: "reject"
 
 status:
-  contract_status: "active_with_arch1_candidate_amendment"
+  contract_status: "active"
   approved_by: "RAY"
-  approved_at: "2026-08-06T09:56:00+08:00"
-  merged_pr: 3
-  merged_commit: "92cbc8bdc87b68d5d6359b4139efda7a9a764fbe"
-  activated_at: "2026-08-06T10:14:00+08:00"
-  arch1_candidate_requires_human_acceptance: true
+  approved_at: "2026-08-19T19:44:00+08:00"
+  merged_pr: 4
+  merged_commit: "869b1db4c21d43fbf4832108b3deb13b02c91694"
+  activated_at: "2026-08-19T19:55:00+08:00"
+  arch1_human_decision: "ACCEPT_ARCH1_1PLUS4PLUS1_REPOSITORY_AUTHORITY_CONVERGENCE"

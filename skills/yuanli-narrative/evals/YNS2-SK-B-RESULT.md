@@ -1,12 +1,12 @@
 # YNS2-SK-B｜Conformance × Golden Invocation × Blind Narrative Benchmark
 
-Status: `PARTIAL PASS / INDEPENDENT BLIND GATE PENDING`
+Status: `PARTIAL PASS / RUNTIME DEPENDENCY + INDEPENDENT BLIND GATES PENDING`
 
 Date: 2026-08-31
 
 ## 1. Conformance settlement
 
-### Structural registration — PASS
+### Structural skill registration — PASS
 
 Verified on `feat/yns2-skill-a`:
 
@@ -16,7 +16,7 @@ Verified on `feat/yns2-skill-a`:
 - `SKILL.md` contains required frontmatter and literal conformance sections:
   `## Contract`, `## Output Format`, `## Anti-Patterns`.
 
-### Unicode routing regression — DEFECT FOUND / FIX INSTALLED
+### Unicode routing regression — DEFECT FOUND / ISOLATED FIX PR OPEN
 
 Root cause discovered during B execution:
 
@@ -24,23 +24,29 @@ Root cause discovered during B execution:
 s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 ```
 
-The previous structural router removed CJK characters. Chinese-only triggers such as
-`原力叙事` and `人物命运叙事` could collapse to an empty string; mixed triggers such as
-`调用原力叙事2.0` could collapse to only `2 0`.
+The existing structural router removes CJK characters. Chinese-only triggers such as
+`原力叙事` and `人物命运叙事` can collapse to an empty string; mixed triggers such as
+`调用原力叙事2.0` can collapse to only `2 0`.
 
-TDD remediation:
+TDD remediation was developed during B:
 
-1. Added `test/routing-eval-unicode.test.ts` first.
+1. Added a Unicode routing regression test first.
 2. Replaced the normalizer with Unicode letter/number semantics:
 
 ```ts
 s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim()
 ```
 
-3. Targeted runtime reproduction now preserves Chinese routing phrases.
+3. Targeted runtime reproduction with the candidate fix preserves Chinese routing phrases.
 
-This is not merely a YNS2 content edit; it fixes the resolver primitive required for
-any non-English skill trigger.
+Because this is generic resolver infrastructure rather than Yuanli Narrative-specific
+logic, the code/test change was removed from PR #5 and isolated into Draft PR #7:
+
+`Fix: preserve Unicode in structural skill routing`
+
+Therefore PR #5 should NOT claim that the runtime fix is already installed on `main`.
+It currently depends on PR #7 (or an equivalent accepted Unicode-safe router fix) for
+reliable Chinese-only structural invocation.
 
 ### Full Bun conformance suite — PENDING
 
@@ -52,9 +58,14 @@ bun test test/skills-conformance.test.ts test/resolver.test.ts test/routing-eval
 
 The current connected environment cannot execute the repository's Bun suite. The
 repo's default branch is `main`, while `.github/workflows/test.yml` currently gates
-`push` and `pull_request` on the stale `master` branch. PR #5 therefore does not get
-the normal Test workflow. `heavy-tests.yml` receives PR synchronization events but is
-label-gated and is correctly skipped without the `heavy-tests` label.
+normal `push` and `pull_request` on the stale `master` branch.
+
+A narrow main-branch conformance workflow has been isolated into Draft PR #6:
+
+`CI: add main-branch skill conformance gate`
+
+No merge is authorized by this result file. Actual test output, not the workflow file,
+is the acceptance evidence.
 
 Therefore: **do not call this FULL CONFORMANCE PASS yet.**
 
@@ -64,19 +75,25 @@ Frozen invocation:
 
 > `调用原力叙事2.0，帮我深度写宫崎骏。`
 
-### Resolver layer — PASS
+### Resolver layer — FIX CANDIDATE VERIFIED / MAIN PENDING
 
-With the Unicode normalizer, the Chinese trigger family resolves structurally to
-`yuanli-narrative` instead of being stripped by ASCII-only normalization.
+With the Unicode candidate fix from PR #7, targeted routing reproduction resolves the
+Chinese trigger family to `yuanli-narrative` instead of stripping CJK text.
 
-Targeted routing checks also pass for:
+Targeted checks with the candidate fix pass for:
 
+- `调用原力叙事2.0...`
 - `按YFN12写...`
 - `用新版叙事风格...`
 - `人物命运叙事...`
 - `把这个商业案例讲成故事，用12-Block重写...`
 - Chinese-only `请用原力叙事帮我写这个人物`
 - negative generic media-summary intent does not match the skill.
+
+Settlement:
+
+- `UNICODE_ROUTING_FIX_CANDIDATE_PASS`
+- `MAIN_RUNTIME_MERGE_PENDING`
 
 ### Fresh-agent render layer — PENDING
 
@@ -85,7 +102,6 @@ legitimately certify its own Miyazaki render as an independent no-context invoca
 
 Settlement:
 
-- `ROUTING_INVOCATION_PASS`
 - `FRESH_AGENT_RENDER_PENDING`
 
 ## 3. Blind transfer benchmark
@@ -160,31 +176,41 @@ Vetoes fired: `0 / 6`.
 
 Self-eval settlement: `PASS`.
 
-## 5. What B proved — and what it did not
+## 5. Independent blind review readiness
+
+`INDEPENDENT-BLIND-REVIEW-PACK.md` freezes reviewer isolation, allowed materials,
+scoring dimensions, adversarial questions, output schema, and pass rule.
+
+This means G2 is reproducible, but it has NOT been executed by an independent reviewer.
+
+## 6. What B proved — and what it did not
 
 ### Evidence supports
 
-1. The skill can transfer structurally from artist/director cases into a founder/governance case.
+1. The narrative kernel transfers structurally from artist/director cases into a founder/governance case.
 2. The Truth Gate prevents the late ownership event from becoming a teleological hero myth.
 3. The framework can hold a real contradiction instead of resolving it into virtue language.
-4. Chinese skill routing required a Unicode-safe resolver; B exposed and repaired that hidden runtime defect.
+4. B exposed a hidden ASCII-only routing defect and produced a separate TDD fix candidate.
+5. The independent review gate is now packaged so a fresh reviewer can run it without seeing the self-score.
 
 ### Evidence does NOT yet support
 
 1. `FULL_CONFORMANCE_PASS` — Bun suite has not run on the branch.
-2. `INDEPENDENT_BLIND_PASS` — the reviewer is the same agent family that built the method.
-3. `CANON_ACCEPTED` — B remains candidate until both gates above close.
-4. Generalization across every narrative domain — one transfer case is evidence, not proof of universality.
+2. `MAIN_UNICODE_ROUTING_PASS` — PR #7 is not merged.
+3. `INDEPENDENT_BLIND_PASS` — no isolated reviewer has frozen a verdict.
+4. `CANON_ACCEPTED` — B remains candidate until the runtime + conformance + independent blind gates close.
+5. Generalization across every narrative domain — one transfer case is evidence, not proof of universality.
 
-## 6. Next legal state
+## 7. Next legal state
 
 Freeze current state as:
 
 `YNS2-SK-B STRUCTURAL / SELF-EVAL PASS`
 
-with two open gates:
+with three operational dependencies/gates:
 
-1. `YNS2-SK-B.G1｜Executable Bun Conformance`
-2. `YNS2-SK-B.G2｜Independent Fresh-Agent Blind Review`
+0. `YNS2-SK-B.G0｜Unicode Routing Runtime Fix` → Draft PR #7
+1. `YNS2-SK-B.G1｜Executable Bun Conformance` → Draft PR #6 enables the main-branch gate
+2. `YNS2-SK-B.G2｜Independent Fresh-Agent Blind Review` → review pack ready, run pending
 
-Only after G1 + G2 pass should `yuanli-narrative` be promoted from candidate to accepted callable capability.
+Only after G0 + G1 + G2 pass should `yuanli-narrative` be promoted from candidate to accepted callable capability.

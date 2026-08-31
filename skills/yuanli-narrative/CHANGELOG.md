@@ -2,7 +2,27 @@
 
 ## 2.0.0-candidate — 2026-08-31
 
-Battle: `YNS2-SK-A｜Canon + Skill + Resolver + Golden Cases`
+### YNS2-SK-B｜Conformance × Golden Invocation × Blind Narrative Benchmark
+
+Added / changed:
+
+- pre-registered blind transfer benchmark on Yvon Chouinard / Patagonia;
+- evidence-grounded blind candidate output + Truth Ledger;
+- B-stage result settlement and self-review scorecard;
+- Unicode routing regression test for CJK skill triggers;
+- Unicode-safe structural routing normalization using Unicode letter/number classes.
+
+Settlement:
+
+- structural registration: PASS;
+- targeted Chinese Golden Invocation routing: PASS;
+- blind transfer self-review: PASS (`4.83/5`, zero preregistered vetoes);
+- full Bun conformance: PENDING;
+- independent fresh-agent blind review: PENDING.
+
+No promotion to accepted capability is authorized until both pending gates close.
+
+### YNS2-SK-A｜Canon + Skill + Resolver + Golden Cases
 
 Added:
 
@@ -17,4 +37,4 @@ Added:
 - routing eval fixtures;
 - callable GBrain skill contract.
 
-Candidate acceptance still requires repository conformance / resolver checks and blind invocation review.
+Candidate acceptance requires executable repository conformance and independent blind invocation review.

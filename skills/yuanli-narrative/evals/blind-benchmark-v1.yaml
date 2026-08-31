@@ -1,0 +1,74 @@
+version: 1
+battle: YNS2-SK-B
+skill: yuanli-narrative
+status: PRE_REGISTERED
+purpose: >-
+  Test whether Yuanli Narrative 2.0 transfers beyond the two cases that helped shape
+  the method. The blind subject must not already be a Yuanli Stars Gold Person page
+  or one of the installed Golden Cases.
+
+blind_case:
+  id: yvon-chouinard-patagonia
+  subject: Yvon Chouinard
+  domain: founder / outdoor business / ownership governance
+  selection_reason: >-
+    Cross-domain stress test: a founder case rather than film authorship, with a
+    business model, environmental stance, ownership architecture, collective causality,
+    and a late-life Reality Settlement. Not found as an existing Yuanli Stars person
+    page at benchmark registration time.
+  frozen_prompt: >-
+    调用原力叙事2.0，深度写 Yvon Chouinard。不要写成“环保企业家”履历，
+    也不要预设“把公司送给地球”天然正确。请解释：一个把商业增长视为潜在问题的创始人，
+    为什么最终选择用所有权结构，而不是一句价值观宣言，来约束公司在自己之后继续做什么？
+
+pre_registered_questions:
+  fate_paradox: >-
+    Why would a founder spend decades building a valuable company and then deliberately
+    design an ownership structure that makes conventional extraction or sale harder?
+  mother_question: >-
+    How can a founder make a value survive the founder without pretending that values
+    are stronger than incentives, ownership, and governance?
+  competing_explanations:
+    - "personal anti-consumption / environmental identity"
+    - "brand differentiation and marketing advantage"
+    - "tax, estate, succession, or control considerations"
+    - "company culture and employee/community pressure"
+    - "ownership architecture as a genuine mission-lock mechanism"
+  hard_negatives:
+    - "Patagonia is still a commercial company that sells physical goods and therefore creates environmental impacts."
+    - "A mission-lock structure does not prove every future operating decision will serve the mission."
+    - "Do not attribute decades of Patagonia outcomes to Chouinard alone; preserve collective causality."
+    - "Do not treat the 2022 ownership transfer as proof that every earlier decision was secretly planned toward it."
+
+source_policy:
+  primary_first:
+    - "Patagonia / Chouinard first-person or official governance materials"
+    - "legal / ownership structure descriptions"
+  secondary:
+    - "high-authority reporting for transaction mechanics, taxes, governance, and dissenting interpretation"
+  truth_gate: "[F] [R] [I] [H] [U]"
+  forbidden:
+    - "unsourced private motives"
+    - "moral halo as causal proof"
+    - "marketing language treated as independent fact"
+
+benchmark_dimensions:
+  hook: "Opening creates a real paradox rather than admiration."
+  character: "Repeated choice pattern is visible without reducing the person to virtue adjectives."
+  causality: "Explains how product, growth, mission, incentives, and ownership interact."
+  tension: "Preserves the contradiction of selling products while criticizing consumption/growth."
+  insight: "Produces a transferable model about founder values and institutional design."
+  trust: "Separates official claims, reported mechanics, interpretation, and unresolved alternatives."
+
+vetoes:
+  - "chronological founder biography"
+  - "green-hero hagiography"
+  - "2022 outcome rewritten as decades-long master plan"
+  - "company/brand/community causality collapsed into one founder"
+  - "ownership structure described inaccurately or without source support"
+  - "ending gives generic purpose advice without answering the Mother Question"
+
+pass_rule: >-
+  No veto fires. Self-review average >= 4/5 with Trust and Causality >= 4/5.
+  This only qualifies the case as SELF-EVAL PASS; promotion to BLIND PASS requires
+  an independent reviewer or fresh agent that did not participate in method construction.

@@ -1,0 +1,54 @@
+version: 1
+skill: yuanli-narrative
+purpose: >-
+  Reference evals for structural quality. These are not exact-string tests; a reviewer
+  should judge whether the runtime preserves the required architecture, epistemic
+  discipline, and reader-facing closure.
+
+cases:
+  - id: nolan-problem-arc
+    subject: Christopher Nolan
+    archetype: problem_arc
+    prompt: "用原力叙事2.0深度写诺兰，不要写成导演履历。"
+    must_have:
+      - "one explicit Mother Question before final render"
+      - "early Genesis Case based on a work, not biography trivia"
+      - "Character OS expressed as a repeated causal pattern"
+      - "separation between recurring question and the claim that time is the only theme"
+      - "at least one hard negative such as a work that resists the thesis"
+      - "late convergence must not be rewritten as decades-long pre-planning"
+      - "ending returns the question to the reader"
+    veto_if:
+      - "starts with birth date and chronological filmography"
+      - "claims all Nolan films are secretly the same story"
+      - "claims later outcome proves earlier intention"
+    reference: ../examples/christopher-nolan.md
+
+  - id: miyazaki-unbetrayable-stance
+    subject: Hayao Miyazaki
+    archetype: unbetrayable_stance
+    prompt: "用原力叙事2.0写宫崎骏，重点不是治愈，而是他一生真正没有背叛什么。"
+    must_have:
+      - "distinguish long-term question from unbetrayable stance"
+      - "preserve anti-war / love-of-aircraft contradiction"
+      - "show concrete life actions as mechanism, not just abstract praise"
+      - "preserve collective causality around Studio Ghibli"
+      - "retirement and return used as Fate Moment without invented private motive"
+      - "ending asks what the reader will not betray when reality is impure"
+    veto_if:
+      - "reduces the work to healing, ecology, childhood, or pacifism alone"
+      - "turns nature into pure good and technology into pure evil"
+      - "attributes all Studio Ghibli outcomes to one person"
+    reference: ../examples/hayao-miyazaki.md
+
+review_dimensions:
+  hook: "Does the first 30–60 seconds create a real unresolved question?"
+  character: "Can the reader predict the subject's likely choice pattern?"
+  causality: "Are mechanisms explicit rather than merely chronological?"
+  tension: "Are there genuine contradictions and state changes?"
+  insight: "Does the story produce a transferable model beyond the subject?"
+  trust: "Are fact, report, inference, hypothesis, and unverified claims separated?"
+
+pass_rule: >-
+  No veto condition may fire. Average reviewer score across the six dimensions
+  should be >= 4/5, with Trust and Causality each >= 4/5.

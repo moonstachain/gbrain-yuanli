@@ -49,6 +49,14 @@ This is the dispatcher. Skills are the implementation. **Read the skill file bef
 > These skills come from GStack. If GStack is installed, the agent reads them directly.
 > If not, brain-only mode still works (brain skills function without thinking skills).
 
+## Narrative & storytelling
+
+| Trigger | Skill |
+|---------|-------|
+| "原力叙事", "原力叙事2.0", "调用原力叙事2.0", "按YFN12写", "用新版叙事风格", "人物命运叙事", "把这个人物写成故事", "把这个商业案例讲成故事", "用12-Block重写" | `skills/yuanli-narrative/SKILL.md` |
+
+Use this skill for causal fate-narrative compilation. If the request is primarily ingestion, article enrichment, strategic reading, concept synthesis, or idea-lineage analysis, route to the neighboring skill first and chain into `yuanli-narrative` only when a finished narrative is requested.
+
 ## Operational
 
 | Trigger | Skill |

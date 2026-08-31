@@ -9,18 +9,23 @@ Added / changed:
 - pre-registered blind transfer benchmark on Yvon Chouinard / Patagonia;
 - evidence-grounded blind candidate output + Truth Ledger;
 - B-stage result settlement and self-review scorecard;
-- Unicode routing regression test for CJK skill triggers;
-- Unicode-safe structural routing normalization using Unicode letter/number classes.
+- independent fresh-agent blind review pack;
+- CI blocker note for executable Bun conformance.
+
+Runtime finding:
+
+- B exposed an ASCII-only routing defect that strips CJK skill triggers;
+- the TDD fix + regression test were intentionally isolated out of this skill PR into Draft PR #7 (`Fix: preserve Unicode in structural skill routing`) because the defect is generic GBrain infrastructure, not Yuanli Narrative-specific code.
 
 Settlement:
 
-- structural registration: PASS;
-- targeted Chinese Golden Invocation routing: PASS;
+- structural skill registration: PASS;
+- Unicode routing candidate reproduction: PASS, main runtime merge PENDING via PR #7;
 - blind transfer self-review: PASS (`4.83/5`, zero preregistered vetoes);
-- full Bun conformance: PENDING;
-- independent fresh-agent blind review: PENDING.
+- full Bun conformance: PENDING; Draft PR #6 provides an isolated main-branch conformance workflow;
+- independent fresh-agent blind review: PENDING; reviewer-isolation pack is ready.
 
-No promotion to accepted capability is authorized until both pending gates close.
+No promotion to accepted capability is authorized until G0 runtime + G1 conformance + G2 independent blind review all close.
 
 ### YNS2-SK-A｜Canon + Skill + Resolver + Golden Cases
 

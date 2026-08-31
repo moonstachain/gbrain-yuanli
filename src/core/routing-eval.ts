@@ -84,20 +84,18 @@ export interface RoutingCaseResult {
 /**
  * Normalize a string for routing comparison:
  *   - lowercase
- *   - replace any non-alphanumeric char with a space
+ *   - preserve Unicode letters/numbers (including CJK)
+ *   - replace punctuation/symbols with a space
  *   - collapse whitespace
  *   - trim
  *
  * Stripping punctuation is deliberately aggressive. Question marks,
- * quotes, dashes, commas, and apostrophes all collapse to spaces. This
- * means `"What's up?"` and `whats up` compare equal — which is what
- * a routing match should do. The cost is slightly over-permissive
- * matching; the benefit is reliable matches across quote/punctuation
- * variants that agents emit in practice.
+ * quotes, dashes, commas, and apostrophes all collapse to spaces. Unicode
+ * letters are preserved so non-English resolver triggers remain routable.
  */
 export function normalizeText(s: string): string {
   if (!s) return '';
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
 }
 
 /**

@@ -1,0 +1,18 @@
+schema: yuanli-estate/v1
+identity:
+  estate_id: gbrain-yuanli
+  plane: Knowledge
+  role: cognitive_engine
+addresses:
+  primary: brain://yuanli/engine/gbrain
+authority:
+  profile: gbrain-engine-v1
+lifecycle:
+  state: active_replaceable_engine
+contracts:
+  governance: ../repo-contract.yaml
+registry:
+  authority: canon://yuanli/method
+  admission_id: YOS-ESTATE1-GENESIS-GBRAIN
+resolver:
+  compatible: yuanli-address-resolver/v1

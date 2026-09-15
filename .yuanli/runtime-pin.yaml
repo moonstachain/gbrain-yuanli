@@ -1,0 +1,69 @@
+schema_version: "yuanli-gbrain-runtime-pin/v1"
+identity: "brain://yuanli/engine/gbrain"
+state: "production_pin_active"
+
+# GBrain is a rebuildable C2 cognitive engine. This file never grants Canon,
+# decision, or action authority.
+authority:
+  role: "replaceable_c2_retrieval_synthesis_graph_engine"
+  knowledge_canon: false
+  decision_authority: false
+  action_authority: false
+  institutional_authority_ref: "github:moonstachain/yuanli-strategy-soul"
+
+production:
+  version: "0.42.57.0"
+  commit: "aa3cf709c5bb3a5944a9e28aa3b2bfbdf8fb06f5"
+  upstream_release_commit: "058f448"
+  deployment_bundle_id: "9b6cea2320fc148e6b46d4e5377f5d0091aec252a454b7954e818cc7825a72a2"
+  observed_runtime_port: 3131
+  observed_engine: "pglite"
+  activation_rule: "keep_until_candidate_replay_passes"
+
+comparison:
+  audited_at: "2026-09-15"
+  audited_main_commit: "4d7709d298932c131bed78af19ff379be83130c1"
+  merge_base: "e3f2637f02888d1038bbc00252027077b5593abe"
+  relationship: "diverged"
+  audited_main_admission: "blocked"
+  blocker_ids:
+    - "yuanli-p5-source-metadata-confinement"
+
+required_patches:
+  - id: "yuanli-embedding-bge-m3"
+    production_commit: "69fa5cc"
+    audited_main_equivalent_commit: "3e4cbb2"
+    load_bearing: true
+    purpose: "declare bge-m3 and dims options for the Yuanli Ollama deployment"
+  - id: "yuanli-schema-pack-frontmatter"
+    production_commit: "edaa357"
+    audited_main_equivalent_commit: "e288b2b"
+    load_bearing: true
+    purpose: "avoid synthesized type when an active schema pack owns inference"
+  - id: "yuanli-ollama-chat-touchpoint"
+    production_commit: "117d92a"
+    audited_main_equivalent_commit: "0b49f99"
+    load_bearing: true
+    purpose: "local Ollama chat touchpoint for think/synthesis"
+  - id: "yuanli-p4-source-grants"
+    production_commit: "e3f2637f02888d1038bbc00252027077b5593abe"
+    audited_main_equivalent_commit: "e3f2637f02888d1038bbc00252027077b5593abe"
+    load_bearing: true
+    purpose: "legacy bearer source-read grants and HTTP MCP scoped search/query"
+  - id: "yuanli-p5-source-metadata-confinement"
+    production_commit: "5a828e1f14696343a30c9a2a03fccb2598636b74"
+    audited_main_equivalent_commit: null
+    load_bearing: true
+    purpose: "confine remote source metadata to authorized grants and redact host locations"
+
+replay_gate:
+  direct_lineage_rule: "candidate containing production.commit may continue to verification"
+  divergent_lineage_rule: "every load-bearing required patch must be present or have a reviewed equivalent commit"
+  required_before_activation:
+    - "runtime_pin_validator_pass"
+    - "full_or_explained_verify"
+    - "source_scope_security_tests"
+    - "gateway_policy_tests"
+    - "fresh_canon_golden_queries"
+    - "human_activation_gate"
+  activation_is_automatic: false

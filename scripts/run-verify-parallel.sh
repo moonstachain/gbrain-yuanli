@@ -42,6 +42,7 @@ CHECKS=(
   "check:source-id-projection"
   "check:source-config-leak"
   "check:workflow-default-branch"
+  "check:runtime-pin"
   "check:progress"
   "check:test-isolation"
   "check:wasm"

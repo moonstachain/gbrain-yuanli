@@ -65,6 +65,16 @@ describe('postgres-engine / search path timeout isolation', () => {
     expect(vector).toMatch(/SET\s+LOCAL\s+statement_timeout/);
   });
 
+  test('searchVector enables transaction-local iterative HNSW scan for filtered recall', () => {
+    const vector = extractMethod(SRC, 'searchVector');
+    expect(vector).toMatch(/SET\s+LOCAL\s+hnsw\.iterative_scan\s*=\s*['"]?strict_order/i);
+  });
+
+  test('searchVector raises transaction-local HNSW ef_search above the lossy default', () => {
+    const vector = extractMethod(SRC, 'searchVector');
+    expect(vector).toMatch(/SET\s+LOCAL\s+hnsw\.ef_search\s*=\s*200/i);
+  });
+
   test('connect() with poolSize honors resolvePrepare (PgBouncer regression guard)', () => {
     // Regression: worker-instance pools were NOT honoring the prepare decision
     // before v0.15.4. Module singleton connect() in db.ts was fixed by #284 but

@@ -1976,6 +1976,18 @@ export class PostgresEngine implements BrainEngine {
 
     const rows = await sql.begin(async sql => {
       await sql`SET LOCAL statement_timeout = '8s'`;
+      // pgvector HNSW applies WHERE filters during ANN traversal. With a
+      // selective source/type/date filter, the default fixed scan can exhaust
+      // its candidate budget before enough matching rows are found. Iterative
+      // strict-order scanning expands the ANN walk until the filtered result
+      // set is satisfied while preserving exact distance ordering. SET LOCAL
+      // keeps the GUC transaction-scoped so pooled connections are unchanged.
+      await sql`SET LOCAL hnsw.iterative_scan = 'strict_order'`;
+      // Default ef_search=40 was empirically insufficient under selective
+      // source filters in the Yuanli rehearsal corpus. 200 is above the
+      // 120-point threshold that recovered the exact 13-vector ordering while
+      // remaining far below pgvector's 1000 maximum. Keep it LOCAL as well.
+      await sql`SET LOCAL hnsw.ef_search = 200`;
       return await sql.unsafe(rawQuery, params as Parameters<typeof sql.unsafe>[1]);
     });
     return rows.map(rowToSearchResult);

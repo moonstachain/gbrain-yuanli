@@ -6,6 +6,7 @@ repository:
   repository_id: "github:moonstachain/gbrain-yuanli"
   repository_name: "gbrain-yuanli"
   repository_role: "rebuildable_c2_retrieval_synthesis_graph_runtime"
+  default_branch: "main"
   owner: "RAY"
   maintainers:
     - "moonstachain"

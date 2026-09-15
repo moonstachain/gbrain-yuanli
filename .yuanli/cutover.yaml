@@ -1,0 +1,65 @@
+schema_version: "yuanli-gbrain-cutover/v1"
+identity: "brain://yuanli/engine/gbrain/cutover"
+state: "constitution_frozen_activation_blocked"
+
+authority:
+  human_principal_required: true
+  activation_is_automatic: false
+  knowledge_canon: false
+  decision_authority: false
+
+last_known_good:
+  runtime_commit: "aa3cf709c5bb3a5944a9e28aa3b2bfbdf8fb06f5"
+  runtime_version: "0.42.57.0"
+  engine: "pglite"
+  port: 3131
+
+candidate:
+  governance_main_commit: "423455bce72ae13fa98dfe371652a9a71f8f9fe5"
+  engine: "postgres"
+  database_name: "yuanli_gbrain"
+  postgres_major: 17
+  pgvector_min_version: "0.8.0"
+  embedding_model: "ollama:bge-m3"
+  embedding_dimensions: 1024
+  vector_shape: "vector(1024)"
+  search_contract:
+    hnsw_iterative_scan: "strict_order"
+    hnsw_ef_search: 200
+
+rehearsal:
+  evidence_id: "YOS-GBR2-G1-20260916T0040"
+  migration_passed: true
+  golden_passed: "20/20"
+  top1_parity: "20/20"
+  jaccard_at_10: 1.0
+  restore_golden_passed: "20/20"
+  dump_sha256: "c4c08c9780fa580f82ab76da3fba98face691f17fbfdc11d2c05ae91497f0e24"
+
+gates:
+  g1_rehearsal_passed: true
+  candidate_main_ci_passed: true
+  hub_bridge_governed: false
+  production_credentials_bound: false
+  fresh_pre_cutover_backup: false
+  human_activation_approved: false
+
+rollback:
+  last_known_good_engine: "pglite"
+  require_pre_cutover_snapshot: true
+  require_post_rollback_golden: true
+  rollback_on:
+    - "health_gate_failure"
+    - "golden_query_failure"
+    - "retrieval_parity_regression"
+    - "gateway_error_rate_breach"
+
+observation:
+  windows: ["1h", "6h", "24h"]
+  required_checks:
+    - "health"
+    - "golden_queries"
+    - "retrieval_drift"
+    - "latency"
+    - "error_rate"
+    - "rollback_readiness"

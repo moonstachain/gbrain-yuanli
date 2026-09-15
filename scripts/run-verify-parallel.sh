@@ -43,6 +43,7 @@ CHECKS=(
   "check:source-config-leak"
   "check:workflow-default-branch"
   "check:runtime-pin"
+  "check:cutover-constitution"
   "check:progress"
   "check:test-isolation"
   "check:wasm"

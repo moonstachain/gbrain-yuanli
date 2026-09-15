@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import { parseSemver, isMinorOrMajorBump, extractChangelogBetween } from '../src/commands/check-update.ts';
+import { parseSemver, isMinorOrMajorBump, extractChangelogBetween, boundChangelogDiff, MAX_CHANGELOG_DIFF_BYTES } from '../src/commands/check-update.ts';
 
 describe('parseSemver', () => {
   test('parses standard version', () => {
@@ -118,6 +118,17 @@ describe('extractChangelogBetween', () => {
     const result = extractChangelogBetween(crossMajor, '1.2.0', '2.0.0');
     expect(result).toContain('Major 2');
     expect(result).not.toContain('Minor 5');
+  });
+});
+
+describe('boundChangelogDiff', () => {
+  test('keeps newest changelog content within a bounded UTF-8 payload', () => {
+    const newest = '## [0.50.0] - 2026-09-10\n- newest important change\n';
+    const huge = newest + ('- historical detail ' + 'x'.repeat(200) + '\n').repeat(4000);
+    const bounded = boundChangelogDiff(huge);
+    expect(new TextEncoder().encode(bounded).byteLength).toBeLessThanOrEqual(MAX_CHANGELOG_DIFF_BYTES);
+    expect(bounded).toContain('newest important change');
+    expect(bounded).toContain('[... changelog truncated ...]');
   });
 });
 

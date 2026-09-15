@@ -23,6 +23,33 @@ function safeWriteCache(marker: UpdateMarker): void {
 // cycle. Existing importers (`test/check-update.test.ts`, etc.) keep working.
 export { parseSemver, isMinorOrMajorBump };
 
+export const MAX_CHANGELOG_DIFF_BYTES = 64 * 1024;
+const CHANGELOG_TRUNCATION_MARKER = '\n\n[... changelog truncated ...]';
+
+/**
+ * Bound changelog payloads before they reach CLI JSON/stdout. The upstream
+ * changelog can span hundreds of KB across many releases; agents only need
+ * the newest portion to summarize an upgrade, and one-shot CLI stdout has a
+ * deliberately bounded flush window.
+ */
+export function boundChangelogDiff(text: string): string {
+  const encoder = new TextEncoder();
+  if (encoder.encode(text).byteLength <= MAX_CHANGELOG_DIFF_BYTES) return text;
+
+  const markerBytes = encoder.encode(CHANGELOG_TRUNCATION_MARKER).byteLength;
+  const budget = MAX_CHANGELOG_DIFF_BYTES - markerBytes;
+  let out = '';
+  let used = 0;
+  for (const line of text.split('\n')) {
+    const piece = out.length === 0 ? line : `\n${line}`;
+    const pieceBytes = encoder.encode(piece).byteLength;
+    if (used + pieceBytes > budget) break;
+    out += piece;
+    used += pieceBytes;
+  }
+  return out.trimEnd() + CHANGELOG_TRUNCATION_MARKER;
+}
+
 interface CheckUpdateResult {
   current_version: string;
   current_source: 'package-json';
@@ -74,7 +101,7 @@ export async function fetchChangelog(currentVersion: string, latestVersion: stri
     });
     if (!res.ok) return '';
     const text = await res.text();
-    return extractChangelogBetween(text, currentVersion, latestVersion);
+    return boundChangelogDiff(extractChangelogBetween(text, currentVersion, latestVersion));
   } catch {
     return '';
   }

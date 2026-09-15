@@ -24,11 +24,14 @@ import {
 import type { TrajectoryPoint } from '../src/core/engine.ts';
 
 let engine: PGLiteEngine;
+let fixtureEmbeddingDimensions = 1536;
 
 beforeAll(async () => {
   engine = new PGLiteEngine();
   await engine.connect({});
   await engine.initSchema();
+  const configured = Number(await engine.getConfig('embedding_dimensions'));
+  if (Number.isFinite(configured) && configured > 0) fixtureEmbeddingDimensions = configured;
 });
 
 afterAll(async () => {
@@ -40,16 +43,21 @@ beforeEach(async () => {
   await engine.executeRaw(`DELETE FROM sources WHERE id LIKE 'traj-%'`);
 });
 
-function vecForMetric(metric: string, offset: number): string {
+test('trajectory fixture can target the active 1280-d schema', () => {
+  const encoded = JSON.parse(vecForMetric('mrr', 0, 1280));
+  expect(encoded).toHaveLength(1280);
+});
+
+function vecForMetric(metric: string, offset: number, dimensions = fixtureEmbeddingDimensions): string {
   // Deterministic per-metric/offset embedding: each metric gets a
   // unit-vector in a different "direction" of the embedding space, with
   // a small perturbation per offset so consecutive same-metric facts
   // are very-similar-but-not-identical (drift score lands between 0 and
   // some small value).
-  const a = new Float32Array(1536);
-  const idx = (metric.charCodeAt(0) + offset) % 1536;
+  const a = new Float32Array(dimensions);
+  const idx = (metric.charCodeAt(0) + offset) % dimensions;
   a[idx] = 1.0;
-  a[(idx + 1) % 1536] = 0.05 * offset;  // tiny drift between consecutive
+  a[(idx + 1) % dimensions] = 0.05 * offset;  // tiny drift between consecutive
   return '[' + Array.from(a).join(',') + ']';
 }
 

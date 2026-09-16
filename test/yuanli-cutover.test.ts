@@ -16,11 +16,14 @@ describe('Yuanli GBrain cutover constitution', () => {
     expect(doc.candidate.search_contract.hnsw_ef_search).toBe(200);
   });
 
-  test('records G1 proof but keeps activation blocked on unresolved production gates', () => {
+  test('records governed Hub bridge evidence while keeping remaining production gates blocked', () => {
     const doc = yaml.load(readFileSync(manifestPath, 'utf8')) as any;
     expect(doc.rehearsal.golden_passed).toBe('20/20');
     expect(doc.rehearsal.restore_golden_passed).toBe('20/20');
-    expect(doc.gates.hub_bridge_governed).toBe(false);
+    expect(doc.gates.hub_bridge_governed).toBe(true);
+    expect(doc.hub_bridge_governance.repository).toBe('moonstachain/gbrain-hub-yuanli');
+    expect(doc.hub_bridge_governance.commit).toBe('ba021aae9721b50a188a9e0df734fa94543bf60c');
+    expect(doc.hub_bridge_governance.ci_run_id).toBe(35045152949);
     expect(doc.gates.production_credentials_bound).toBe(false);
     expect(doc.gates.fresh_pre_cutover_backup).toBe(false);
     expect(doc.gates.human_activation_approved).toBe(false);
@@ -36,7 +39,7 @@ describe('Yuanli GBrain cutover constitution', () => {
     const r = Bun.spawnSync(['bun','scripts/check-yuanli-cutover.ts']);
     expect(r.exitCode).toBe(3);
     const text = r.stdout.toString() + r.stderr.toString();
-    expect(text).toContain('hub_bridge_governed');
+    expect(text).not.toContain('hub_bridge_governed');
     expect(text).toContain('production_credentials_bound');
     expect(text).toContain('fresh_pre_cutover_backup');
     expect(text).toContain('human_activation_approved');

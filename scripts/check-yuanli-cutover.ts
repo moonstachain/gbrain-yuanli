@@ -8,6 +8,7 @@ type Manifest = {
   last_known_good: { runtime_commit: string; runtime_version: string; engine: string; port: number };
   candidate: { governance_main_commit: string; engine: string; database_name: string; postgres_major: number; pgvector_min_version: string; embedding_model: string; embedding_dimensions: number; vector_shape: string; search_contract: { hnsw_iterative_scan: string; hnsw_ef_search: number } };
   rehearsal: { evidence_id: string; migration_passed: boolean; golden_passed: string; top1_parity: string; jaccard_at_10: number; restore_golden_passed: string; dump_sha256: string };
+  hub_bridge_governance?: { repository: string; commit: string; ci_run_id: number; ci_conclusion: string; provenance_schema: string };
   gates: Record<string, boolean>;
   rollback: { last_known_good_engine: string; require_pre_cutover_snapshot: boolean; require_post_rollback_golden: boolean; rollback_on: string[] };
   observation: { windows: string[]; required_checks: string[] };
@@ -25,6 +26,13 @@ function assertManifest(value: unknown): asserts value is Manifest {
   if (m.candidate.search_contract?.hnsw_iterative_scan !== 'strict_order' || m.candidate.search_contract?.hnsw_ef_search !== 200) throw new Error('cutover_search_contract_invalid');
   if (m.rehearsal?.migration_passed !== true || m.rehearsal?.golden_passed !== '20/20' || m.rehearsal?.top1_parity !== '20/20' || m.rehearsal?.jaccard_at_10 !== 1 || m.rehearsal?.restore_golden_passed !== '20/20') throw new Error('cutover_rehearsal_evidence_invalid');
   if (!/^[0-9a-f]{64}$/.test(m.rehearsal.dump_sha256)) throw new Error('cutover_dump_hash_invalid');
+  if (m.gates?.hub_bridge_governed === true) {
+    const h = m.hub_bridge_governance;
+    if (h?.repository !== 'moonstachain/gbrain-hub-yuanli') throw new Error('cutover_hub_governance_repo_invalid');
+    if (!/^[0-9a-f]{40}$/.test(h?.commit ?? '')) throw new Error('cutover_hub_governance_commit_invalid');
+    if (!Number.isSafeInteger(h?.ci_run_id) || (h?.ci_run_id ?? 0) <= 0 || h?.ci_conclusion !== 'success') throw new Error('cutover_hub_governance_ci_invalid');
+    if (h?.provenance_schema !== 'yuanli-gbrain-hub-governance-provenance/v1') throw new Error('cutover_hub_governance_provenance_invalid');
+  }
   if (m.rollback?.last_known_good_engine !== 'pglite' || m.rollback?.require_pre_cutover_snapshot !== true || m.rollback?.require_post_rollback_golden !== true) throw new Error('cutover_rollback_contract_invalid');
   if (!Array.isArray(m.observation?.windows) || !['1h','6h','24h'].every((x) => m.observation!.windows.includes(x))) throw new Error('cutover_observation_windows_invalid');
 }

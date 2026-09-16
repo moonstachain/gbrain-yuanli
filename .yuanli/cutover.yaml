@@ -36,10 +36,17 @@ rehearsal:
   restore_golden_passed: "20/20"
   dump_sha256: "c4c08c9780fa580f82ab76da3fba98face691f17fbfdc11d2c05ae91497f0e24"
 
+hub_bridge_governance:
+  repository: "moonstachain/gbrain-hub-yuanli"
+  commit: "ba021aae9721b50a188a9e0df734fa94543bf60c"
+  ci_run_id: 35045152949
+  ci_conclusion: "success"
+  provenance_schema: "yuanli-gbrain-hub-governance-provenance/v1"
+
 gates:
   g1_rehearsal_passed: true
   candidate_main_ci_passed: true
-  hub_bridge_governed: false
+  hub_bridge_governed: true
   production_credentials_bound: false
   fresh_pre_cutover_backup: false
   human_activation_approved: false

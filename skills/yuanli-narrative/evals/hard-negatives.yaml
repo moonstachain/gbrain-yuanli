@@ -1,0 +1,87 @@
+version: 1
+skill: yuanli-narrative
+purpose: >-
+  Prevent Yuanli Narrative 2.0 from degenerating into a universal hero-template,
+  hindsight mythology, or stylish rumor amplification.
+
+cases:
+  - id: no-stable-core
+    scenario: "The subject has sparse, contradictory material and no repeated choice pattern."
+    expected_behavior:
+      - "do not invent a lifelong Mother Thesis"
+      - "state that a stable Character OS is not yet supported"
+      - "use a narrower event-level narrative or ask for more evidence"
+    forbidden:
+      - "force a one-core destiny arc"
+
+  - id: wikipedia-only
+    scenario: "Only chronology, dates, titles, and generic biography facts are available."
+    expected_behavior:
+      - "refuse to upgrade chronology into motive or mechanism"
+      - "identify missing evidence required for B04–B11"
+    forbidden:
+      - "manufacture scenes, private motives, or decisive turning points"
+
+  - id: spectacular-rumor
+    scenario: "A viral anecdote perfectly explains the subject but lacks a reliable source."
+    expected_behavior:
+      - "label as [U] or [R] depending on attribution"
+      - "do not let the anecdote carry the main causal explanation"
+    forbidden:
+      - "present rumor as the Genesis Case fact"
+
+  - id: era-beta-dominates
+    scenario: "Most peers benefited from the same structural tailwind and the subject's individual edge is unclear."
+    expected_behavior:
+      - "separate Era Beta from Person Alpha"
+      - "downgrade heroic claims"
+      - "use counterfactual or peer comparison if evidence exists"
+    forbidden:
+      - "attribute the whole boom to foresight"
+
+  - id: hindsight-as-foresight
+    scenario: "A later crisis makes an earlier conservative decision look brilliant."
+    expected_behavior:
+      - "describe the later event as Reality Settlement"
+      - "distinguish robust positioning from precise prediction"
+    forbidden:
+      - "claim the subject predicted the exact crisis without contemporaneous evidence"
+
+  - id: collective-causality-collapse
+    scenario: "A company, film, laboratory, or movement is strongly associated with one famous person."
+    expected_behavior:
+      - "identify the focal person's high-leverage choices"
+      - "preserve partner, team, institutional, technological, capital, and historical contributions"
+    forbidden:
+      - "treat one person as the sole cause of collective output"
+
+  - id: hard-negative-work
+    scenario: "One major work or period resists the preferred one-core thesis."
+    expected_behavior:
+      - "keep it visible"
+      - "either narrow the thesis or preserve it as a genuine counterexample"
+    forbidden:
+      - "delete or reinterpret every contradiction until the thesis becomes unfalsifiable"
+
+  - id: style-without-causality
+    scenario: "The draft has short sentences, reversals, and memorable lines but no mechanisms."
+    expected_behavior:
+      - "fail Causality benchmark"
+      - "rebuild around Choice → Mechanism → Consequence"
+    forbidden:
+      - "pass merely because the prose is cinematic"
+
+  - id: generic-reader-lesson
+    scenario: "The ending becomes 'believe in yourself / persist / follow your passion'."
+    expected_behavior:
+      - "return specifically to the Mother Question"
+      - "derive a reader mirror from the demonstrated mechanism or stance"
+    forbidden:
+      - "generic motivational closure"
+
+  - id: no-real-fate-paradox
+    scenario: "The opening contrast is sensational but unrelated to the eventual thesis."
+    expected_behavior:
+      - "rewrite B01 so the paradox is causally connected to B12"
+    forbidden:
+      - "clickbait promise that the narrative never settles"

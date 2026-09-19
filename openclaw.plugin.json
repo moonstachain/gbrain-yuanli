@@ -67,7 +67,8 @@
     "skills/strategic-reading",
     "skills/testing",
     "skills/voice-note-ingest",
-    "skills/webhook-transforms"
+    "skills/webhook-transforms",
+    "skills/yuanli-narrative"
   ],
   "shared_deps": [
     "skills/conventions",
